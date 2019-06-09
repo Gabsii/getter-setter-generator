@@ -1,0 +1,16 @@
+class Lamp {
+
+    // instance variable
+    private boolean isOn;
+    private int age;
+
+    // method
+    public void turnOn() {
+      isOn = true;
+    }
+  
+    // method
+    public void turnOff() {
+        isOn = false;
+    }
+  }
