@@ -29,15 +29,19 @@ or just use the Command Palette and search for `Generate Getter/Setter`
   - [ ] C++/C#
   - [ ] Python
   - [ ] Go
-  - [ ] PHP
+  - [X] PHP
   - [ ] Ruby
   - [ ] React
 - [ ] Customize Code Style
 - [ ] Generate Getter/Setter without selection
+- [ ] Automatically generate Code Documentation
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 1.1.0
+
+Added PHP Support
+New Known Issue (-> Constructor Variables)
 
 ### 1.0.0
 
@@ -45,7 +49,8 @@ Initial release of getter-setter-generator for VS Code
 
 ## Known issues
 
-- Make sure whole lines are selected for indentation purposes  
+- Make sure whole lines are selected for indentation purposes
+- Problems with constructor variables  
 
 ## Authors and Collaborators
 
