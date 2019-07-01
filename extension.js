@@ -233,8 +233,8 @@ function generateSetterPhp(indentSize, variableName) {
 
 	let code =
 		`
-${indentSize}public function set${variableNameUp}($${variableName}) {
-${indentSize}\tthis->${variableName} = $${variableName};
+\n${indentSize}public function set${variableNameUp}($${variableName}) {
+${indentSize}\t$this->${variableName} = $${variableName};
 ${indentSize}\treturn $this;
 ${indentSize}}
 `
