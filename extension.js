@@ -216,8 +216,9 @@ function generateGetterPhp(indentSize, variableName) {
 
 	let code =
 		`
-\n${indentSize}public function get${variableNameUp}() {
-${indentSize}\treturn $this->${variableName};
+\n${indentSize}public function get${variableNameUp}()
+${indentSize}{
+${indentSize}    return $this->${variableName};
 ${indentSize}}`
 	return code;
 }
@@ -233,9 +234,10 @@ function generateSetterPhp(indentSize, variableName) {
 
 	let code =
 		`
-\n${indentSize}public function set${variableNameUp}($${variableName}) {
-${indentSize}\t$this->${variableName} = $${variableName};
-${indentSize}\treturn $this;
+\n${indentSize}public function set${variableNameUp}($${variableName})
+${indentSize}{
+${indentSize}    $this->${variableName} = $${variableName};
+${indentSize}    return $this;
 ${indentSize}}
 `
 	return code;
