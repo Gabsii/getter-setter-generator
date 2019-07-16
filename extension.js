@@ -216,7 +216,12 @@ function generateGetterPhp(indentSize, variableName) {
 
 	let code =
 		`
-\n${indentSize}public function get${variableNameUp}()
+\n${indentSize}/**
+${indentSize} * Getter for ${variableNameUp}
+${indentSize} *
+${indentSize} * @return [type]
+${indentSize} */
+${indentSize}public function get${variableNameUp}()
 ${indentSize}{
 ${indentSize}    return $this->${variableName};
 ${indentSize}}`
@@ -234,7 +239,13 @@ function generateSetterPhp(indentSize, variableName) {
 
 	let code =
 		`
-\n${indentSize}public function set${variableNameUp}($${variableName})
+\n${indentSize}/**
+${indentSize} * Setter for ${variableNameUp}
+${indentSize} * @var [type] ${variableName}
+${indentSize} *
+${indentSize} * @return self
+${indentSize} */
+${indentSize}public function set${variableNameUp}($${variableName})
 ${indentSize}{
 ${indentSize}    $this->${variableName} = $${variableName};
 ${indentSize}    return $this;
