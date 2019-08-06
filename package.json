@@ -7,7 +7,7 @@
 	"author": {
 		"name": "Gabsii"
 	},
-	"version": "1.2.0",
+	"version": "1.3.0",
 	"engines": {
 		"vscode": "^1.35.0"
 	},
@@ -23,6 +23,14 @@
 			{
 				"command": "extension.generateGetterSetter",
 				"title": "Generate Getter Setter"
+			},
+			{
+				"command": "extension.generateGetter",
+				"title": "Generate Getter"
+			}, 
+			{
+				"command": "extension.generateSetter",
+				"title": "Generate Setter"
 			}
 		],
 		"keybindings": [
@@ -34,7 +42,8 @@
 	},
 	"scripts": {
 		"postinstall": "node ./node_modules/vscode/bin/install",
-		"test": "node ./node_modules/vscode/bin/test"
+		"test": "node ./node_modules/vscode/bin/test",
+		"deploy": "vsce package && vsce publish"
 	},
 	"devDependencies": {
 		"typescript": "^3.3.1",
