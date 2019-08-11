@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
+const lang = require('./lang.js');
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -37,20 +38,10 @@ function activate(context) {
 			let text = editor.document.getText(editor.selection);
 			let generatedCode;
 
-			if (language === 'java') {
-				generatedCode = generateGetterSetterJava(text, "both");				
-			} else if (language === 'php') {
-				generatedCode = generateGetterSetterPhp(text, "both");								
-			} else if (language === 'python') {
-				generatedCode = generateGetterSetterPython(text, "both");
-			} else if (language === 'cpp') {
-				generatedCode = generateGetterSetterCPP(text, "both");
-			} else if (language === 'javascript') {
-				generatedCode = generateGetterSetterJavaScript(text, "both");
-			} else if (language === 'typescript') {
-				generatedCode = generateGetterSetterTypeScript(text, "both");
+			if (language === 'java' || language === 'php' || language === 'python' || language === 'cpp' || language === 'javascript' || language === 'typescript' ) {
+				generatedCode = generateGetterSetterAutomatically(text, "both", language);			
 			} else {
-				vscode.window.showInformationMessage('Language currently unknown, please submit an Issue for this package!')
+				vscode.window.showInformationMessage('Language currently unsupported, please submit an Issue for this package!')
 			}
 
 			// gets the current editor and appends the getters/setters 
@@ -88,20 +79,10 @@ function activate(context) {
 			let text = editor.document.getText(editor.selection);
 			let generatedCode;
 
-			if (language === 'java') {
-				generatedCode = generateGetterSetterJava(text, "getter");				
-			} else if (language === 'php') {
-				generatedCode = generateGetterSetterPhp(text, "getter");								
-			} else if (language === 'python') {
-				generatedCode = generateGetterSetterPython(text, "getter");
-			} else if (language === 'cpp') {
-				generatedCode = generateGetterSetterCPP(text, "getter");
-			} else if (language === 'javascript') {
-				generatedCode = generateGetterSetterJavaScript(text, "getter");
-			} else if (language === 'typescript') {
-				generatedCode = generateGetterSetterTypeScript(text, "getter");
+			if (language === 'java' || language === 'php' || language === 'python' || language === 'cpp' || language === 'javascript' || language === 'typescript' ) {
+				generatedCode = generateGetterSetterAutomatically(text, "getter", language);			
 			} else {
-				vscode.window.showInformationMessage('Language currently unknown, please submit an Issue for this package!')
+				vscode.window.showInformationMessage('Language currently unsupported, please submit an Issue for this package!')
 			}
 
 			// gets the current editor and appends the getters/setters 
@@ -113,7 +94,7 @@ function activate(context) {
 				)
 			);
 
-			vscode.window.showInformationMessage('Getter/Setter were generated');
+			vscode.window.showInformationMessage('Getter were generated');
 		} else {
 			vscode.window.showErrorMessage('Nothing was selected!');
 		}
@@ -139,21 +120,12 @@ function activate(context) {
 			let text = editor.document.getText(editor.selection);
 			let generatedCode;
 
-			if (language === 'java') {
-				generatedCode = generateGetterSetterJava(text, "setter");				
-			} else if (language === 'php') {
-				generatedCode = generateGetterSetterPhp(text, "setter");								
-			} else if (language === 'python') {
-				generatedCode = generateGetterSetterPython(text, "setter");
-			} else if (language === 'cpp') {
-				generatedCode = generateGetterSetterCPP(text, "setter");
-			} else if (language === 'javascript') {
-				generatedCode = generateGetterSetterJavaScript(text, "setter");
-			} else if (language === 'typescript') {
-				generatedCode = generateGetterSetterTypeScript(text, "setter");
+			if (language === 'java' || language === 'php' || language === 'python' || language === 'cpp' || language === 'javascript' || language === 'typescript' ) {
+				generatedCode = generateGetterSetterAutomatically(text, "setter", language);			
 			} else {
-				vscode.window.showInformationMessage('Language currently unknown, please submit an Issue for this package!')
+				vscode.window.showInformationMessage('Language currently unsupported, please submit an Issue for this package!')
 			}
+
 
 			// gets the current editor and appends the getters/setters 
 			editor.edit(
@@ -164,7 +136,7 @@ function activate(context) {
 				)
 			);
 
-			vscode.window.showInformationMessage('Getter/Setter were generated');
+			vscode.window.showInformationMessage('Setter were generated');
 		} else {
 			vscode.window.showErrorMessage('Nothing was selected!');
 		}
@@ -181,13 +153,7 @@ exports.activate = activate;
  * @typedef {"both" | "getter" | "setter"} returnableType 
  */
 
-/**
- * 
- * @param {String} text the selected Java code which will be used to generate the getters/setters
- * @param {String} returnableType returns either a getter, setter or both
- * @returns {String} String that contains the generated getters/setters 
- */
-function generateGetterSetterJava(text, returnableType) {
+function generateGetterSetterAutomatically(text, returnableType, language){
 	let selectedTextArray = text.split('\r\n').filter(e => e); //removes empty array values (line breaks)
 	let generatedCode = '';
 
@@ -197,571 +163,80 @@ function generateGetterSetterJava(text, returnableType) {
 		selectedText = text.replace(';', '').trim(); //removes all semicolons 
 		indentSize = text.split(selectedText.charAt(0))[0]; //get the indent size for proper formatting
 
-		// java modifier: public, private, static, asset, final, ...
-		// TODO use modifier
-		let hasModifier = selectedText.split(' ').length == 3;
 
-		if (hasModifier) {
-			variableType = selectedText.split(' ')[1];
-			variableName = selectedText.split(' ')[2];
-		} else {
-			variableType = selectedText.split(' ')[0];
-			variableName = selectedText.split(' ')[1];
-		}
-
-		if (variableName === null || variableName === undefined) {
-			vscode.window.showErrorMessage('Faulty Selection. Please make sure you select a Java variable.')
-			return; 
-		}
-
-		let code = '';
-		
-		if (returnableType === "both") {
-			let getter = generateGetterJava(indentSize, variableType, variableName);
-			let setter = generateSetterJava(indentSize, variableType, variableName);				
-		
-			code = getter + setter;		
-		} else if (returnableType === "getter"){
-			let getter = generateGetterJava(indentSize, variableType, variableName);
-		
-			code = getter;			
-		} else if (returnableType === "setter"){
-			let setter = generateSetterJava(indentSize, variableType, variableName);
-
-			code = setter;			
-		}
-
-		generatedCode += code; //append the code for each selected line
-
-	}
-
-	return generatedCode;
-}
-
-/**
- * 
- * @param {String} indentSize 
- * @param {String} variableType 
- * @param {String} variableName 
- * 
- * @returns Java Getter
- */
-function generateGetterJava(indentSize, variableType, variableName) {
-	let variableNameUp = variableName.charAt(0).toUpperCase() + variableName.slice(1);
-
-	let code =
-		`
-\n${indentSize}public ${variableType} get${variableNameUp}() {
-${indentSize}\treturn this.${variableName};
-${indentSize}}`
-	return code;
-}
-
-/**
- * 
- * @param {String} indentSize 
- * @param {String} variableType 
- * @param {String} variableName 
- * 
- * @returns Java Setter
- */
-function generateSetterJava(indentSize, variableType, variableName) {
-	let variableNameUp = variableName.charAt(0).toUpperCase() + variableName.slice(1);
-
-	let code =
-		`
-${indentSize}public void set${variableNameUp}(${variableType} ${variableName}) {
-${indentSize}\tthis.${variableName} = ${variableName};
-${indentSize}}
-`
-	return code;
-}
-
-/**
- * 
- * @param {String} text the selected PHP code which will be used to generate the getters/setters
- * @param {String} returnableType returns either a getter, setter or both
- * @returns {String} String that contains the generated getters/setters 
- */
-function generateGetterSetterPhp(text, returnableType) {
-	let hasSemicolon = text.includes(';');
-	let selectedTextArray = text.split('\r\n').filter(e => e); //removes empty array values (line breaks)
-	let generatedCode = '';
-
-	for (const text of selectedTextArray) {
-		let selectedText, indentSize, variableName;
-
-		if (hasSemicolon) {
-			selectedText = text.replace(';', '').trim(); //removes all semicolons 
-			indentSize = text.split(selectedText.charAt(0))[0]; //get the indent size for proper formatting
-		} else {
-			selectedText = text.trim();
-			indentSize = text.split(selectedText.charAt(0))[0];
-		}
-
-		let isConstructorVariable = selectedText.includes('$this->');
-
-		if (isConstructorVariable) {
-
-			// $this->edible = $edible;
-			variableName = selectedText.split('>')[1].split(' ')[0];
-		} else {
-
-			// TODO use modifier
-			// let hasModifier = selectedText.split(' ').length == 3;
-			variableName = selectedText.split('$')[1];
-		}
-
-		if (variableName === null || variableName === undefined) {
-			vscode.window.showErrorMessage('Faulty Selection. Please make sure you select a PHP variable.')
-			return; 
-		}
-
-		let code = '';
-		
-		if (returnableType === "both") {
-			let getter = generateGetterPhp(indentSize, variableName);
-			let setter = generateSetterPhp(indentSize, variableName);				
-		
-			code = getter + setter;		
-		} else if (returnableType === "getter"){
-			let getter = generateGetterPhp(indentSize, variableName);
-		
-			code = getter;			
-		} else if (returnableType === "setter"){
-			let setter = generateSetterPhp(indentSize, variableName);
-
-			code = setter;			
-		}
-
-		generatedCode += code; //append the code for each selected line
-
-	}
-
-	return generatedCode;
-}
-
-/**
- * 
- * @param {String} indentSize 
- * @param {String} variableName 
- * @returns PHP Getter
- * */
-function generateGetterPhp(indentSize, variableName) {
-	let variableNameUp = variableName.charAt(0).toUpperCase() + variableName.slice(1);
-
-	let code =
-		`
-\n${indentSize}/**
-${indentSize} * Getter for ${variableNameUp}
-${indentSize} *
-${indentSize} * @return [type]
-${indentSize} */
-${indentSize}public function get${variableNameUp}()
-${indentSize}{
-${indentSize}    return $this->${variableName};
-${indentSize}}`
-	return code;
-}
-
-/**
- * 
- * @param {String} indentSize 
- * @param {String} variableName 
- * @returns PHP Setter
- * */
-function generateSetterPhp(indentSize, variableName) {
-	let variableNameUp = variableName.charAt(0).toUpperCase() + variableName.slice(1);
-
-	let code =
-		`
-\n${indentSize}/**
-${indentSize} * Setter for ${variableNameUp}
-${indentSize} * @var [type] ${variableName}
-${indentSize} *
-${indentSize} * @return self
-${indentSize} */
-${indentSize}public function set${variableNameUp}($${variableName})
-${indentSize}{
-${indentSize}    $this->${variableName} = $${variableName};
-${indentSize}    return $this;
-${indentSize}}
-`
-	return code;
-}
-
-/**
- * 
- * @param {String} text the selected Python code which will be used to generate the getters/setters
- * @param {String} returnableType returns either a getter, setter or both
- * @returns {String} String that contains the generated getters/setters 
- */
-function generateGetterSetterPython(text, returnableType) {
-	let selectedTextArray = text.split('\r\n').filter(e => e); //removes empty array values (line breaks)
-	let generatedCode = '';
-
-	for (const text of selectedTextArray) {
-		let selectedText, indentSize, variableName;
-
-		selectedText = text.trim(); //removes all semicolons 
-		indentSize = text.split(selectedText.charAt(0))[0]; //get the indent size for proper formatting
+		if (language === 'java') {
+			let hasModifier = selectedText.split(' ').length == 3;
 	
-
-		let isConstructorVariable = selectedText.includes('self.');
-
-		if (isConstructorVariable) {
-
-			// $this->edible = $edible;
-			variableName = selectedText.split('.')[1].split(' ')[0];
-		} else {
-
-			variableName = selectedText.split('=')[0].trim();
+			if (hasModifier) {
+				variableType = selectedText.split(' ')[1];
+				variableName = selectedText.split(' ')[2];
+			} else {
+				variableType = selectedText.split(' ')[0];
+				variableName = selectedText.split(' ')[1];
+			}
+		} else if (language === 'php'){
+			let isConstructorVariable = selectedText.includes('$this->');
+	
+			if (isConstructorVariable) {
+				variableName = selectedText.split('>')[1].split(' ')[0];
+			} else {
+				variableName = selectedText.split('$')[1];
+			}
+		} else if (language === 'python'){
+			let isConstructorVariable = selectedText.includes('self.');
+	
+			if (isConstructorVariable) {
+				variableName = selectedText.split('.')[1].split(' ')[0];
+			} else {
+				variableName = selectedText.split('=')[0].trim();
+			}
+		} else if (language === 'cpp'){
+			variableType = selectedText.split(' ')[0];
+			variableName = selectedText.split(' ')[1];	
+		} else if (language === 'javascript' || language === 'typescript'){
+			let isConstructorVariable = selectedText.includes('.');
+	
+			if (isConstructorVariable) {
+				variableName = selectedText.split('.')[1].split(' ')[0];
+			} else {
+				variableName = selectedText.split(':')[0];
+			}		
 		}
-
+		
 		if (variableName === null || variableName === undefined) {
-			vscode.window.showErrorMessage('Faulty Selection. Please make sure you select a PHP variable.')
+			vscode.window.showErrorMessage('Faulty Selection. Please make sure you select a variable.')
 			return; 
 		}
 
-		let code = '';
-		if (returnableType === "both") {
-			let getter = generateGetterPython(indentSize, variableName);
-			let setter = generateSetterPython(indentSize, variableName);				
+		variableName.trim();
+		variableType.trim();
 		
+		let code = '';
+		let langObject = lang[language];
+		let variableNameUp = variableName.charAt(0).toUpperCase() + variableName.slice(1);
+
+		if (returnableType === "both") {
+			let getterPlain = langObject.getter
+			let setterPlain = langObject.setter				
+		
+			let getter = getterPlain.replace(/indentSize/g, indentSize).replace(/variableType/g, variableType).replace(/variableNameUp/g, variableNameUp).replace(/variableName/g, variableName);
+			let setter = setterPlain.replace(/indentSize/g, indentSize).replace(/variableType/g, variableType).replace(/variableNameUp/g, variableNameUp).replace(/variableName/g, variableName);
+
 			code = getter + setter;		
 		} else if (returnableType === "getter"){
-			let getter = generateGetterPython(indentSize, variableName);
-		
+			let getterPlain = langObject.getter		
+			let getter = getterPlain.replace(/indentSize/g, indentSize).replace(/variableType/g, variableType).replace(/variableNameUp/g, variableNameUp).replace(/variableName/g, variableName);
+			
 			code = getter;			
 		} else if (returnableType === "setter"){
-			let setter = generateSetterPython(indentSize, variableName);
+			let setterPlain = langObject.setter
+			let setter = setterPlain.replace(/indentSize/g, indentSize).replace(/variableType/g, variableType).replace(/variableNameUp/g, variableNameUp).replace(/variableName/g, variableName);
 
 			code = setter;			
 		}
 		generatedCode += code; //append the code for each selected line
-
 	}
-
 	return generatedCode;
-}
-
-/**
- * 
- * @param {String} indentSize 
- * @param {String} variableName 
- * @returns Python Getter
- * */
-function generateGetterPython(indentSize, variableName) {
-	let code =
-		`\n${indentSize}def get_${variableName}(self):
-${indentSize}\treturn self.${variableName}
-${indentSize}`
-	return code;
-}
-
-/**
- * 
- * @param {String} indentSize 
- * @param {String} variableName 
- * @returns Python Setter
- * */
-function generateSetterPython(indentSize, variableName) {
-	let code =
-		`\n${indentSize}def set_${variableName}(self, ${variableName}) :
-${indentSize}\tself.${variableName} = ${variableName}
-`
-	return code;
-}
-
-/**
- * 
- * @param {String} text the selected C++ code which will be used to generate the getters/setters
- * @param {String} returnableType returns either a getter, setter or both
- * @returns {String} String that contains the generated getters/setters 
- */
-function generateGetterSetterCPP(text, returnableType) {
-	let hasSemicolon = text.includes(';');
-	let selectedTextArray = text.split('\r\n').filter(e => e); //removes empty array values (line breaks)
-	let generatedCode = '';
-
-	for (const text of selectedTextArray) {
-		let selectedText, indentSize, variableName, variableType;
-
-		if (hasSemicolon) {
-			selectedText = text.replace(';', '').trim(); //removes all semicolons 
-			indentSize = text.split(selectedText.charAt(0))[0]; //get the indent size for proper formatting
-		} else {
-			selectedText = text.trim();
-			indentSize = text.split(selectedText.charAt(0))[0];
-		}
-
-		variableType = selectedText.split(' ')[0];
-		variableName = selectedText.split(' ')[1];	
-
-		if (variableName === null || variableName === undefined || variableType === null || variableType === undefined) {
-			vscode.window.showErrorMessage('Faulty Selection. Please make sure you select a PHP variable.')
-			return; 
-		}
-
-		let code = '';
-
-		if (returnableType === "both") {
-			let getter = generateGetterCPP(indentSize, variableName, variableType);
-			let setter = generateSetterCPP(indentSize, variableName, variableType);				
-		
-			code = getter + setter;		
-		} else if (returnableType === "getter"){
-			let getter = generateGetterCPP(indentSize, variableName, variableType);
-		
-			code = getter;			
-		} else if (returnableType === "setter"){
-			let setter = generateSetterCPP(indentSize, variableName, variableType);
-
-			code = setter;			
-		}
-
-		generatedCode += code; //append the code for each selected line
-
-	}
-
-	return generatedCode;
-}
-
-/**
- * 
- * @param {String} indentSize 
- * @param {String} variableName 
- * @returns C++ Getter
- * */
-function generateGetterCPP(indentSize, variableName, variableType) {
-	let variableNameUp = variableName.charAt(0).toUpperCase() + variableName.slice(1);
-
-	let code =
-		`
-\n${indentSize}${variableType} get${variableNameUp}() {
-${indentSize}\treturn this->${variableName};
-${indentSize}}`
-	return code;
-}
-
-/**
- * 
- * @param {String} indentSize 
- * @param {String} variableName 
- * @returns C++ Setter
- * */
-function generateSetterCPP(indentSize, variableName, variableType) {
-	let variableNameUp = variableName.charAt(0).toUpperCase() + variableName.slice(1);
-
-	let code =
-		`
-${indentSize}void set${variableNameUp}(${variableType} ${variableName}) {
-${indentSize}\tthis->${variableName} = ${variableName};
-${indentSize}}
-`
-	return code;
-}
-
-/**
- * 
- * @param {String} text the selected Java code which will be used to generate the getters/setters
- * @param {String} returnableType returns either a getter, setter or both
- * @returns {String} String that contains the generated getters/setters 
- */
-function generateGetterSetterJavaScript(text, returnableType) {
-	let selectedTextArray = text.split('\r\n').filter(e => e); //removes empty array values (line breaks)
-	let generatedCode = '';
-
-	for (const text of selectedTextArray) {
-		let selectedText, indentSize, variableName;
-
-		selectedText = text.replace(';', '').trim(); //removes all semicolons 
-		indentSize = text.split(selectedText.charAt(0))[0]; //get the indent size for proper formatting
-
-		// java modifier: public, private, static, asset, final, ...
-		// TODO use modifier
-		let isConstructorVariable = selectedText.includes('.');
-
-		if (isConstructorVariable) {
-			// this.height = height;
-			variableName = selectedText.split('.')[1].split(' ')[0];
-		} else {
-			// firstName: "John",
-			variableName = selectedText.split(':')[0];
-		}
-
-		if (variableName === null || variableName === undefined) {
-			vscode.window.showErrorMessage('Faulty Selection. Please make sure you select a Java variable.')
-			return; 
-		}
-
-		let code = '';
-
-		if (returnableType === "both") {
-			let getter = generateGetterJavaScript(indentSize, variableName, isConstructorVariable);
-			let setter = generateSetterJavaScript(indentSize, variableName, isConstructorVariable);				
-		
-			code = getter + setter;		
-		} else if (returnableType === "getter"){
-			let getter = generateGetterJavaScript(indentSize, variableName, isConstructorVariable);
-		
-			code = getter;			
-		} else if (returnableType === "setter"){
-			let setter = generateSetterJavaScript(indentSize, variableName, isConstructorVariable);
-
-			code = setter;			
-		}
-
-		generatedCode += code; //append the code for each selected line
-
-	}
-
-	return generatedCode;
-}
-
-/**
- * 
- * @param {String} indentSize 
- * @param {String} variableName 
- * 
- * @returns Java Getter
- */
-function generateGetterJavaScript(indentSize, variableName, isConstructorVariable) {
-	let variableNameUp = variableName.charAt(0).toUpperCase() + variableName.slice(1);
-	let code;
-
-	if(isConstructorVariable){
-		code = 			
-			`
-\n${indentSize}get${variableNameUp}() {
-${indentSize}\treturn this.${variableName};
-${indentSize}}`
-	} else {
-		code = 
-			`
-\n${indentSize}get${variableNameUp}: function() {
-${indentSize}\treturn this.${variableName};
-${indentSize}},`
-	}
-	return code;
-}
-
-/**
- * 
- * @param {String} indentSize 
- * @param {String} variableName 
- * 
- * @returns Java Setter
- */
-function generateSetterJavaScript(indentSize, variableName, isConstructorVariable) {
-	let variableNameUp = variableName.charAt(0).toUpperCase() + variableName.slice(1);
-	let code;
-
-	if(isConstructorVariable){
-		code = 			
-			`
-\n${indentSize}set${variableNameUp}(${variableName}) {
-${indentSize}\tthis.${variableName} = ${variableName};
-${indentSize}}`
-	} else {
-		code = 
-			`
-\n${indentSize}set${variableNameUp}: function(${variableName}) {
-${indentSize}\tthis.${variableName} = ${variableName};
-${indentSize}},`
-	}
-	return code;
-}
-
-/**
- * 
- * @param {String} text the selected Java code which will be used to generate the getters/setters
- * @param {String} returnableType returns either a getter, setter or both
- * @returns {String} String that contains the generated getters/setters 
- */
-function generateGetterSetterTypeScript(text, returnableType) {
-	let selectedTextArray = text.split('\r\n').filter(e => e); //removes empty array values (line breaks)
-	let generatedCode = '';
-
-	for (const text of selectedTextArray) {
-		let selectedText, indentSize, variableName;
-
-		selectedText = text.replace(';', '').trim(); //removes all semicolons 
-		indentSize = text.split(selectedText.charAt(0))[0]; //get the indent size for proper formatting
-
-		// java modifier: public, private, static, asset, final, ...
-		// TODO use modifier
-		let isConstructorVariable = selectedText.includes('.');
-
-		if (isConstructorVariable) {
-			// this.height = height;
-			variableName = selectedText.split('.')[1].split(' ')[0];
-		} else {
-			// firstName: "John",
-			variableName = selectedText.split(':')[0];
-		}
-
-		if (variableName === null || variableName === undefined) {
-			vscode.window.showErrorMessage('Faulty Selection. Please make sure you select a Java variable.')
-			return; 
-		}
-
-		let code = '';
-
-		if (returnableType === "both") {
-			let getter = generateGetterTypeScript(indentSize, variableName);
-			let setter = generateSetterTypeScript(indentSize, variableName);				
-		
-			code = getter + setter;		
-		} else if (returnableType === "getter"){
-			let getter = generateGetterTypeScript(indentSize, variableName);
-		
-			code = getter;			
-		} else if (returnableType === "setter"){
-			let setter = generateSetterTypeScript(indentSize, variableName);
-
-			code = setter;			
-		}
-
-		generatedCode += code; //append the code for each selected line
-
-	}
-
-	return generatedCode;
-}
-
-/**
- * 
- * @param {String} indentSize 
- * @param {String} variableName 
- * 
- * @returns Java Getter
- */
-function generateGetterTypeScript(indentSize, variableName) {
-	let variableNameUp = variableName.charAt(0).toUpperCase() + variableName.slice(1);
-	let code = 			
-			`
-\n${indentSize}get${variableNameUp}() {
-${indentSize}\treturn this.${variableName};
-${indentSize}}`
-	return code;
-}
-
-/**
- * 
- * @param {String} indentSize 
- * @param {String} variableName 
- * 
- * @returns Java Setter
- */
-function generateSetterTypeScript(indentSize, variableName) {
-	let variableNameUp = variableName.charAt(0).toUpperCase() + variableName.slice(1);
-	let code = 			
-			`
-\n${indentSize}set${variableNameUp}(${variableName}) {
-${indentSize}\tthis.${variableName} = ${variableName};
-${indentSize}}`
-	return code;
 }
 
 // this method is called when your extension is deactivated
