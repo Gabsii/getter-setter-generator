@@ -158,6 +158,11 @@ function generateGetterSetterAutomatically(text, returnableType, language){
 	let generatedCode = '';
 
 	for (const text of selectedTextArray) {
+
+		if(text.startsWith('@') && language === 'java'){
+			continue;
+		}
+
 		let selectedText, indentSize, variableType, variableName;
 
 		selectedText = text.replace(';', '').trim(); //removes all semicolons 
