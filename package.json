@@ -7,7 +7,7 @@
   "author": {
     "name": "Gabsii"
   },
-  "version": "1.3.0",
+  "version": "1.4.0",
   "engines": {
     "vscode": "^1.35.0"
   },
@@ -62,11 +62,11 @@
     "deploy": "vsce package && vsce publish"
   },
   "devDependencies": {
-    "typescript": "^3.6.4",
-    "vscode": "^1.1.36",
-    "eslint": "^5.13.0",
+    "@types/mocha": "^5.2.7",
     "@types/node": "^12.11.1",
-    "@types/mocha": "^5.2.7"
+    "eslint": "^5.13.0",
+    "typescript": "^3.6.4",
+    "vscode": "^1.1.36"
   },
   "license": "SEE LICENSE IN LICENSE.txt",
   "bugs": {
@@ -77,5 +77,8 @@
     "type": "git",
     "url": "https://github.com/Gabsii/getter-setter-generator.git"
   },
-  "homepage": "https://github.com/Gabsii/getter-setter-generatorblob/master/README.md"
+  "homepage": "https://github.com/Gabsii/getter-setter-generatorblob/master/README.md",
+  "dependencies": {
+    "vsce": "^1.68.0"
+  }
 }
