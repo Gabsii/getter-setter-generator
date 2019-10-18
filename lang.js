@@ -42,7 +42,7 @@ indentSize}
 indentSize\treturn self.variableName
 indentSize`,
         setter: 
-`\nindentSizedef set_variableName(self, variableName) :
+`\nindentSizedef set_variableName(self, variableName):
 indentSize\tself.variableName = variableName
 `
     },
@@ -63,17 +63,17 @@ indentSize}
 indentSize\treturn this.variableName;
 indentSize}`,
         setter: `
-\nindentSizesetvariableNameUp(variableName) {
+\nindentSizefunction setvariableNameUp(variableName) {
 indentSize\tthis.variableName = variableName;
 indentSize}`
     },
     typescript: {
         getter: `
-\nindentSizegetvariableNameUp() {
+\nindentSizefunction getvariableNameUp() {
 indentSize\treturn this.variableName;
 indentSize}`,
         setter: `
-\nindentSizesetvariableNameUp(variableName) {
+\nindentSizefunction setvariableNameUp(variableName) {
 indentSize\tthis.variableName = variableName;
 indentSize}`
     }

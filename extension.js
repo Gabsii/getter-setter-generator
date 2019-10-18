@@ -214,7 +214,7 @@ function generateGetterSetterAutomatically(text, returnableType, language){
 		}
 
 		variableName.trim();
-		variableType.trim();
+		variableType && variableType.trim();
 		
 		let code = '';
 		let langObject = lang[language];

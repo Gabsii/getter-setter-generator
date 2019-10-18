@@ -1,65 +1,81 @@
 {
-	"name": "getter-setter-generator",
-	"displayName": "Getter/Setter Generator",
-	"description": "Create getters and setters for several languages automatically!",
-	"icon": "images/logo.png",
-	"publisher": "Gabsii",
-	"author": {
-		"name": "Gabsii"
-	},
-	"version": "1.3.0",
-	"engines": {
-		"vscode": "^1.35.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"onCommand:extension.generateGetterSetter"
-	],
-	"main": "./extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "extension.generateGetterSetter",
-				"title": "Generate Getter Setter"
-			},
-			{
-				"command": "extension.generateGetter",
-				"title": "Generate Getter"
-			}, 
-			{
-				"command": "extension.generateSetter",
-				"title": "Generate Setter"
-			}
-		],
-		"keybindings": [
-			{
-				"command": "extension.generateGetterSetter",
-				"key": "ctrl+alt+d"
-			}
-		]
-	},
-	"scripts": {
-		"postinstall": "node ./node_modules/vscode/bin/install",
-		"test": "node ./node_modules/vscode/bin/test",
-		"deploy": "vsce package && vsce publish"
-	},
-	"devDependencies": {
-		"typescript": "^3.6.4",
-		"vscode": "^1.1.36",
-		"eslint": "^5.13.0",
-		"@types/node": "^12.11.1",
-		"@types/mocha": "^5.2.7"
-	},
-	"license": "SEE LICENSE IN LICENSE.txt",
-	"bugs": {
-		"url": "https://github.com/Gabsii/getter-setter-generator/issues",
-		"email": "lukas.gabsi@gmail.com"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/Gabsii/getter-setter-generator.git"
-	},
-	"homepage": "https://github.com/Gabsii/getter-setter-generatorblob/master/README.md"
+  "name": "getter-setter-generator",
+  "displayName": "Getter/Setter Generator",
+  "description": "Create getters and setters for several languages automatically!",
+  "icon": "images/logo.png",
+  "publisher": "Gabsii",
+  "author": {
+    "name": "Gabsii"
+  },
+  "version": "1.3.0",
+  "engines": {
+    "vscode": "^1.35.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:extension.generateGetterSetter"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.generateGetterSetter",
+        "title": "Generate Getter Setter"
+      },
+      {
+        "command": "extension.generateGetter",
+        "title": "Generate Getter"
+      },
+      {
+        "command": "extension.generateSetter",
+        "title": "Generate Setter"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "extension.generateGetterSetter",
+        "key": "ctrl+alt+d"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "extension.generateGetterSetter",
+          "title": "Generate Getter Setter"
+        },
+        {
+          "command": "extension.generateGetter",
+          "title": "Generate Getter"
+        },
+        {
+          "command": "extension.generateSetter",
+          "title": "Generate Setter"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "node ./node_modules/vscode/bin/test",
+    "deploy": "vsce package && vsce publish"
+  },
+  "devDependencies": {
+    "typescript": "^3.6.4",
+    "vscode": "^1.1.36",
+    "eslint": "^5.13.0",
+    "@types/node": "^12.11.1",
+    "@types/mocha": "^5.2.7"
+  },
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "bugs": {
+    "url": "https://github.com/Gabsii/getter-setter-generator/issues",
+    "email": "lukas.gabsi@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gabsii/getter-setter-generator.git"
+  },
+  "homepage": "https://github.com/Gabsii/getter-setter-generatorblob/master/README.md"
 }
