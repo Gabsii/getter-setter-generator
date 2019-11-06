@@ -46,7 +46,7 @@
 		"deploy": "vsce package && vsce publish"
 	},
 	"devDependencies": {
-		"typescript": "^3.6.4",
+		"typescript": "^3.7.2",
 		"vscode": "^1.1.36",
 		"eslint": "^5.13.0",
 		"@types/node": "^12.11.1",
