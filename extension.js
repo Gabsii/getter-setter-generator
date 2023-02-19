@@ -162,6 +162,22 @@ function generateGetterSetterAutomatically(text, returnableType, language){
 		if(text.startsWith('@') && language === 'java'){
 			continue;
 		}
+		if(text.startsWith('#') && language === 'python'){
+			continue;
+		}
+		if(text.startsWith('/') && language === 'cpp'){
+			continue;
+		}
+		if(text.startsWith('\.') && language === 'python'){
+			continue;
+		}
+		if(text.startsWith('\'') && language === 'python'){
+			continue;
+		}
+		if(text.startsWith('@') && language === 'python'){
+			continue;
+		}
+
 
 		let selectedText, indentSize, variableType, variableName;
 
@@ -180,6 +196,8 @@ function generateGetterSetterAutomatically(text, returnableType, language){
 				variableName = selectedText.split(' ')[1];
 			}
 		} else if (language === 'php'){
+			variableType = "";
+
 			let isConstructorVariable = selectedText.includes('$this->');
 	
 			if (isConstructorVariable) {
@@ -188,6 +206,7 @@ function generateGetterSetterAutomatically(text, returnableType, language){
 				variableName = selectedText.split('$')[1];
 			}
 		} else if (language === 'python'){
+			variableType = "";
 			let isConstructorVariable = selectedText.includes('self.');
 	
 			if (isConstructorVariable) {
@@ -199,6 +218,8 @@ function generateGetterSetterAutomatically(text, returnableType, language){
 			variableType = selectedText.split(' ')[0];
 			variableName = selectedText.split(' ')[1];	
 		} else if (language === 'javascript' || language === 'typescript'){
+
+			variableType = "";
 			let isConstructorVariable = selectedText.includes('.');
 	
 			if (isConstructorVariable) {
@@ -212,19 +233,61 @@ function generateGetterSetterAutomatically(text, returnableType, language){
 			vscode.window.showErrorMessage('Faulty Selection. Please make sure you select a variable.')
 			return; 
 		}
+		if(variableName.startsWith('@') && language === 'java'){
+			continue;
+		}
+		if(variableName.startsWith('#') && language === 'python'){
+			continue;
+		}
+		if(variableName.startsWith('/') && language === 'cpp'){
+			continue;
+		}
+		if(variableName.startsWith('\.') && language === 'python'){
+			continue;
+		}
+		if(variableName.startsWith('\'') && language === 'python'){
+			continue;
+		}
+		if(variableName.startsWith('@') && language === 'python'){
+			continue;
+		}
+
 
 		variableName.trim();
-		variableType.trim();
+		/**
+		 * 以下代码为修正
+		 */
+		if (language === 'java' ||  language === 'cpp' ) {
+			variableType.trim();
+		}
+		
 		
 		let code = '';
 		let langObject = lang[language];
-		let variableNameUp = variableName.charAt(0).toUpperCase() + variableName.slice(1);
+		let variableNameUp
+
+		if(language === "python")
+		{
+			// let variableName_ = variableName.replace("_","")
+			// variableNameUp = variableName_.charAt(0).toUpperCase() + variableName_.slice(1);
+			variableNameUp = variableName.replace(/__/g,"")
+		}
+		else{
+			variableNameUp = variableName.charAt(0).toUpperCase() + variableName.slice(1);
+		}
 
 		if (returnableType === "both") {
 			let getterPlain = langObject.getter
 			let setterPlain = langObject.setter				
-		
+			
+			/*
+			if(language === "python")
+			{
+				let getter = getterPlain.replace(/indentSize/g, indentSize).replace(/variableType/g, variableType).replace(/variableNameUp/g, variableNameUp).replace(/variableName/g, variableName);
+			}*/
+
 			let getter = getterPlain.replace(/indentSize/g, indentSize).replace(/variableType/g, variableType).replace(/variableNameUp/g, variableNameUp).replace(/variableName/g, variableName);
+			
 			let setter = setterPlain.replace(/indentSize/g, indentSize).replace(/variableType/g, variableType).replace(/variableNameUp/g, variableNameUp).replace(/variableName/g, variableName);
 
 			code = getter + setter;		

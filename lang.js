@@ -1,3 +1,11 @@
+/*
+ * @Author: GJTY 1205995361@qq.com
+ * @Date: 2022-08-04 14:43:58
+ * @LastEditors: GJTY 1205995361@qq.com
+ * @LastEditTime: 2022-08-04 17:00:52
+ * @FilePath: \Dpc:\Users\12059\.vscode\extensions\gabsii.getter-setter-generator-1.4.0\lang.js
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 module.exports ={
 
     java: {
@@ -38,12 +46,12 @@ indentSize}
     },
     python: {
         getter: 
-`\nindentSizedef get_variableName(self):
-indentSize\treturn self.variableName
+`\n\nindentSize@property\nindentSizedef variableNameUp(self):
+indentSize    return self.variableName
 indentSize`,
         setter: 
-`\nindentSizedef set_variableName(self, variableName) :
-indentSize\tself.variableName = variableName
+`\nindentSize@variableNameUp.setter\nindentSizedef variableNameUp(self, variableNameUp):
+indentSize    self.variableName = variableNameUp
 `
     },
     cpp: {
